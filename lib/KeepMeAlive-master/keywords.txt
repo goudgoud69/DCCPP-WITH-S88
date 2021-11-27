@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map For KeepMeAlive
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+watchdogTimer	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setDelay	KEYWORD2
+enable	KEYWORD2
+doResetCPU	KEYWORD2
+disable	KEYWORD2
+reset	KEYWORD2
+attachInterrupt	KEYWORD2
+detachInterrupt	KEYWORD2
+interruptAttached	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
