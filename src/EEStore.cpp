@@ -18,6 +18,7 @@ Part of DCC++ BASE STATION for the Arduino
 #include "Sensor.h"
 #include "Outputs.h"
 #include "S88.h"
+#include "SensorMuxCard.h"
 #include <EEPROM.h>
 
 ///////////////////////////////////////////////////////////////////////////////

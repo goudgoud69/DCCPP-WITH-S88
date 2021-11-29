@@ -369,10 +369,11 @@ Main include file of the library.*/
 //
 #define USE_EEPROM
 //#define USE_TURNOUT
-//#define USE_SENSOR    // not compatible with USE_S88
+//#define USE_SENSOR    // not compatible with USE_S88 and USE_SENSORMUXCARD
 //#define USE_OUTPUT
-#define USE_S88
+//#define USE_S88         // not compatible with USE_SENSOR and USE_SENSORMUXCARD
 #define USE_TEXTCOMMAND
+#define USE_SENSORMUXCARD // // not compatible with USE_SENSOR and USE_S88
 //#define USE_ETHERNET_WIZNET_5100
 //#define USE_ETHERNET_WIZNET_5500
 //#define USE_ETHERNET_WIZNET_5200
@@ -454,6 +455,9 @@ Main include file of the library.*/
 #endif
 #ifdef USE_S88
 #include "S88.h"
+#endif
+#ifdef USE_SENSORMUXCARD
+#include "SensorMuxCard.h"
 #endif
 #ifdef USE_TEXTCOMMAND
 #include "TextCommand.h"

@@ -5,6 +5,7 @@ COPYRIGHT (c) 2013-2016 Gregg E. Berman
 
 Part of DCC++ BASE STATION for the Arduino
 
+David Goudard : add sensorMuxCard
 **********************************************************************/
 
 #ifndef EEStore_h
@@ -31,6 +32,9 @@ struct EEStoreData{
 #ifdef USE_S88
   int nS88;  /**< number of S88 byte-modules .*/
 #endif
+#ifdef USE_SENSORMUXCARD
+  int nSensorMuxCard; 	/**< Sensors number.*/
+#endif 
 };
 
 /** This structure/class stores accessories data in EEPROM.

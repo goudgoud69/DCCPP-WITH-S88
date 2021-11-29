@@ -6,6 +6,8 @@ Adapted for DcDcc by Thierry PARIS
 
 Part of DCC++ BASE STATION for the Arduino
 
+Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
+
 **********************************************************************/
 #ifndef __config_h
 #define __config_h
@@ -70,6 +72,23 @@ Part of DCC++ BASE STATION for the Arduino
 
 #define POLOLU_DIRECTION_MOTOR_CHANNEL_PIN_A 7
 #define POLOLU_DIRECTION_MOTOR_CHANNEL_PIN_B 8
+
+////////////////////////////////////////////////////////////////////////////
+// SELECT PINS MULTIPLEX CARD
+////////////////////////////////////////////////////////////////////////////
+#ifdef USE_SENSORMUXCARD
+#define MUX_CARD_NB 1 // nombre de carte multiplexeurs/demultiplexeurs
+#define MUX_CARD_NB_VOIES 16 // nombre de voix sur carte multiplexeurs/demultiplexeurs
+
+#define MUX_SIG_IN_PIN A0  
+
+#define MUX_S0_PIN 3
+#define MUX_S1_PIN 4
+#define MUX_S2_PIN 5
+#define MUX_S3_PIN 6
+
+
+#endif
 
 #ifdef USE_ETHERNET
 enum EthernetProtocol

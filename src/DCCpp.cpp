@@ -2,6 +2,8 @@
 project: <DCCpp library>
 author: <Thierry PARIS>
 description: <DCCpp class>
+
+Modification : David Goudard ajout senseurs par cartes multiplex
 *************************************************************/
 
 #include "DCCpp.h"
@@ -119,7 +121,13 @@ void DCCpp::loop()
 #ifdef USE_SENSOR
 	Sensor::check();    // check sensors for activated or not
 #endif
+
+#ifdef USE_SENSORMUXCARD
+	SensorMuxCard::check();    // check sensors for activated or not
+#endif
+
 }
+
 
 void DCCpp::beginMain(uint8_t inOptionalDirectionMotor, uint8_t inSignalPin, uint8_t inSignalEnable, uint8_t inCurrentMonitor)
 {
@@ -325,6 +333,10 @@ void DCCpp::begin()
 		EEStore::store();
 #endif
 
+#ifdef USE_SENSORMUXCARD
+	SensorMuxCard::SensorInit(); // initialize multiplex config card
+#endif 
+
 #ifdef DCCPP_DEBUG_MODE
 	//pinMode(LED_BUILTIN, OUTPUT);
 	Serial.println(F("begin achieved"));
@@ -456,7 +468,9 @@ void DCCpp::showConfiguration()
 	Serial.print(F("VERSION DCC++:         "));
 	Serial.println(VERSION);
 	Serial.println(F(LIBRARY_VERSION));
-	Serial.println(F(S88_VERSION));
+	#ifdef USE_S88 
+	  Serial.println(F(S88_VERSION));
+	#endif
 	Serial.print(F("COMPILED:  "));
 	Serial.print(__DATE__);
 	Serial.print(F(" "));
@@ -529,6 +543,10 @@ void DCCpp::showConfiguration()
 #if defined(USE_S88)
     Serial.print(F("     S88   M: "));
     Serial.println(EEStore::data.nS88);
+#endif
+#ifdef USE_SENSORMUXCARD
+    Serial.print(F("     SENSORMUX : "));
+    Serial.println(EEStore::data.nSensorMuxCard);
 #endif
 #endif
 
