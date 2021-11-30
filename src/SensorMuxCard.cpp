@@ -56,33 +56,36 @@
   #endif
 
   int DataFormat = 3;     // Output DataFormat 0=binary 1=hexa 2=Q ID; 9=disabled
-  String SensorStatus;       //  sensor status response
+  //String SensorStatus;       //  sensor status response
   String OldSensorStatus;
 
 // Définition des cartes
 #if MUX_CARD_NB > 0
 Mux_Card mux_card[MUX_CARD_NB] = {
-    {2, 2}}; // pin 2, model 16 ports
+    {2, 16}}; // pin 2, model 16 ports
 #endif
 
 void SensorMuxCard::init() {
      mux_card_init();
+     OldSensorStatus = SensorMuxCard::getSensorStatus();
 }
 
 void SensorMuxCard::check() {
-    
+    String SensorStatus;
     if (DataFormat < 3) SensorStatus = "<y ";  // start of feedback (CDT30 or CDM-Rail)
     if (DataFormat == 0) {                  // binary in ASCII
         SensorStatus += SensorMuxCard::getSensorStatus();
     } else if ( (DataFormat == 1) || (DataFormat == 2) ) {           // hexa in ASCII or pure hexa
     } else if (DataFormat == 3) {           // JMRI, Rocrail or SENSOR style
         SensorStatus = SensorMuxCard::getSensorStatus();
+         
         if (OldSensorStatus != SensorStatus) {
+         INTERFACE.print(SensorStatus);
           for (unsigned int sIndex = 0; sIndex < SensorStatus.length(); sIndex++) {
-              String tmp = SensorStatus.substring(sIndex, sIndex + 1);
-              String oldTmp = OldSensorStatus.substring(sIndex, sIndex + 1);
+              String tmp = SensorStatus.substring(sIndex, 1); //sIndex + 1);
+              String oldTmp = OldSensorStatus.substring(sIndex, 1); //sIndex + 1);
               if (tmp[0] != oldTmp[0]) {
-                INTERFACE.print( tmp[0] == '1' ? "<q " : "<Q " );
+                INTERFACE.print( tmp[0] == '0' ? "<q " : "<Q " );
                 INTERFACE.print(sIndex+1);      // sIndex range 0..511
                 INTERFACE.print(">");
 #if !defined(USE_ETHERNET)
@@ -111,7 +114,7 @@ String SensorMuxCard::getSensorStatus() {
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
         for (byte j=0; j < mux_card[i].NB_OUT; j++)
-        SensorStatus +=  mux_card_read(i, j);
+          SensorStatus +=  mux_card_read(i, j);
     }
 #endif
     return SensorStatus;    

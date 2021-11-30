@@ -13,6 +13,8 @@ CD4051B
 #include "Config.h"
 #include "mux_card.h"
 
+#define DEBUG_MODE
+
 extern Mux_Card mux_card[];
 
 const int mux_selectPins[] = {MUX_S0_PIN, MUX_S1_PIN, MUX_S2_PIN, MUX_S3_PIN};
@@ -65,16 +67,16 @@ byte mux_card_read(byte num_card, byte out)
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
         //desactive le CD4051B
-        pinMode(mux_card[i].ENABLE_PIN, OUTPUT);
-        digitalWrite(mux_card[i].ENABLE_PIN, HIGH);
+        if (i != num_card) {
+          pinMode(mux_card[i].ENABLE_PIN, OUTPUT);
+          digitalWrite(mux_card[i].ENABLE_PIN, HIGH);
+        }
     }
 
 
     // Active le CD4051B
     pinMode(mux_card[num_card].ENABLE_PIN, OUTPUT);
     digitalWrite(mux_card[num_card].ENABLE_PIN, LOW);
-
-    //pinMode(MUX_SIG_IN_PIN, INPUT);
 
     // force les sorties
     if (mux_card[num_card].NB_OUT > 8)
@@ -87,6 +89,11 @@ byte mux_card_read(byte num_card, byte out)
     }
     val = digitalRead(MUX_SIG_IN_PIN); //analogRead(MUX_SIG_IN_PIN); utiliser digital comme cela on reçoit 0 ou 1 pour détecteur présence c'est mieux.
 #endif
+     
+    #ifdef DEBUG_MODE 
+    //Serial.print(" "); 
+    //Serial.println(val);
+    #endif
 
     return val;
 }
@@ -108,16 +115,36 @@ void selectMuxPin16(byte pin)
 
 void selectMuxPin(byte pin, byte maxSIG)
 {
-    for (int i = 0; i < maxSIG; i++)
-    {
+     digitalWrite(MUX_S0_PIN, bitRead(pin, 0));
+        digitalWrite(MUX_S1_PIN, bitRead(pin, 1));
+        digitalWrite(MUX_S2_PIN, bitRead(pin, 2));
+
+        if (maxSIG == 4)
+        {
+            digitalWrite(MUX_S3_PIN, bitRead(pin, 3));
+        }
+    #ifdef DEBUG_MODE
+    /*
+     Serial.print("Pin ");
+     Serial.print(pin);
+     Serial.print(" ");
+     if (maxSIG == 4) Serial.print(bitRead(pin, 3));    
+Serial.print(bitRead(pin, 2));
+Serial.print(bitRead(pin, 1));
+Serial.println(bitRead(pin, 0));
+*/
+#endif
+ //   for (int i = 0; i < maxSIG; i++)
+ //   {
         /*
-        if (DEBUG_MODE) {
+        //if (DEBUG_MODE) {
             Serial.print("Pin ");
             Serial.print(mux_selectPins[i]);
             Serial.print("-->");
             Serial.println(bitRead(pin, i));
-        }
-        */
-        digitalWrite(mux_selectPins[i], bitRead(pin, i));
-    }
+        //}
+        //*/
+        //digitalWrite(mux_selectPins[i], bitRead(pin, i));
+  //  }
+    
 }
