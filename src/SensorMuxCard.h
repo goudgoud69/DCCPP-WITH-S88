@@ -6,17 +6,16 @@ COPYRIGHT (c) 2021 David Goudard
 **********************************************************************/
 
 #ifndef SensorMuxCard_h
-  #define S88SensorMuxCard_h_h
-
-  #include "DCCpp.h"
+  #define SensorMuxCard_h
 
  #ifdef USE_SENSORMUXCARD
    #include "Arduino.h"
+   #include "DCCpp.h"
    #include "mux_card.h"
 
 struct SensorMuxCard{
-   static void SensorInit();
-   static void SensorMuxCardCheck();
+   static void init();
+   static void check();
    static String getSensorStatus();
 };
 

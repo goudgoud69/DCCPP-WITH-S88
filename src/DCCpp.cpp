@@ -19,7 +19,9 @@ CurrentMonitor DCCpp::mainMonitor;  // create monitor for current on Main Track
 CurrentMonitor DCCpp::progMonitor;  // create monitor for current on Program Track
 
 bool DCCpp::programMode;
-bool DCCpp::panicStopped; 
+bool DCCpp::panicStopped;
+
+unsigned int time0 = 0;
 
 // *********************************************************** FunctionsState
 
@@ -123,7 +125,16 @@ void DCCpp::loop()
 #endif
 
 #ifdef USE_SENSORMUXCARD
+ 	unsigned int time1 = millis(); //unsigned int is suffiscient
+	if ((time1 - time0) < 500)
+    	return;
+  // on arrive ici toute les 500ms
+  //Serial.println(time1 - time0);
+  
 	SensorMuxCard::check();    // check sensors for activated or not
+
+	time0 = time1;
+
 #endif
 
 }
@@ -307,6 +318,8 @@ void DCCpp::beginProg(uint8_t inOptionalDirectionMotor, uint8_t inSignalPin, uin
 
 void DCCpp::begin()
 {
+	time0 = millis();
+
 	programMode = false;
 	panicStopped = false;
 
@@ -334,7 +347,7 @@ void DCCpp::begin()
 #endif
 
 #ifdef USE_SENSORMUXCARD
-	SensorMuxCard::SensorInit(); // initialize multiplex config card
+	SensorMuxCard::init(); // initialize multiplex config card
 #endif 
 
 #ifdef DCCPP_DEBUG_MODE

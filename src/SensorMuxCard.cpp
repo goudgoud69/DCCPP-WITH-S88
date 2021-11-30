@@ -57,33 +57,40 @@
 
   int DataFormat = 3;     // Output DataFormat 0=binary 1=hexa 2=Q ID; 9=disabled
   String SensorStatus;       //  sensor status response
+  String OldSensorStatus;
 
 // Définition des cartes
 #if MUX_CARD_NB > 0
 Mux_Card mux_card[MUX_CARD_NB] = {
-    {2, 16}}; // pin 2, model 16 ports
+    {2, 2}}; // pin 2, model 16 ports
 #endif
 
-void SensorInit() {
+void SensorMuxCard::init() {
      mux_card_init();
 }
 
-void SensorMuxCardCheck() {
+void SensorMuxCard::check() {
     
     if (DataFormat < 3) SensorStatus = "<y ";  // start of feedback (CDT30 or CDM-Rail)
     if (DataFormat == 0) {                  // binary in ASCII
-        SensorStatus += getSensorStatus();
+        SensorStatus += SensorMuxCard::getSensorStatus();
     } else if ( (DataFormat == 1) || (DataFormat == 2) ) {           // hexa in ASCII or pure hexa
     } else if (DataFormat == 3) {           // JMRI, Rocrail or SENSOR style
-        SensorStatus = getSensorStatus();
-        for (unsigned int sIndex = 0; sIndex < SensorStatus.length(); sIndex++) {
-            String tmp = SensorStatus.substring(sIndex, sIndex + 1);
-            INTERFACE.print( tmp[0] == '0' ? "<q " : "<Q " );
-            INTERFACE.print(sIndex+1);      // sIndex range 0..511
-            INTERFACE.print(">");
+        SensorStatus = SensorMuxCard::getSensorStatus();
+        if (OldSensorStatus != SensorStatus) {
+          for (unsigned int sIndex = 0; sIndex < SensorStatus.length(); sIndex++) {
+              String tmp = SensorStatus.substring(sIndex, sIndex + 1);
+              String oldTmp = OldSensorStatus.substring(sIndex, sIndex + 1);
+              if (tmp[0] != oldTmp[0]) {
+                INTERFACE.print( tmp[0] == '1' ? "<q " : "<Q " );
+                INTERFACE.print(sIndex+1);      // sIndex range 0..511
+                INTERFACE.print(">");
 #if !defined(USE_ETHERNET)
-            INTERFACE.println("");
+                INTERFACE.println("");
 #endif
+              }
+          }
+          OldSensorStatus = SensorStatus;
         }
 #ifdef USE_EEPROM        
         EEStore::data.nSensorMuxCard =  SensorStatus.length();
@@ -98,7 +105,7 @@ void SensorMuxCardCheck() {
     }
 }
 
-String getSensorStatus() {
+String SensorMuxCard::getSensorStatus() {
     String SensorStatus = "";
 #if MUX_CARD_NB >= 1
     for (byte i = 0; i < MUX_CARD_NB; i++)
@@ -110,4 +117,4 @@ String getSensorStatus() {
     return SensorStatus;    
 }
 
-#endif  // USE_SENSORMUXCARD
+#endif  // USE_SENSORMUXCARDs

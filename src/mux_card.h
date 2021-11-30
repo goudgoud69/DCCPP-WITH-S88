@@ -1,10 +1,7 @@
-
-#include <Arduino.h>
-#include "DCCpp.h"
-#include "Config.h"
-
 #ifndef _MUX_CARD_H
 #define _MUX_CARD_H
+
+#include <Arduino.h>
 
 //----------------------------------------------------------------------
 // cartes multiplexage
