@@ -23,8 +23,8 @@ void mux_card_init()
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
         // Active le CD4051B
-        pinMode(mux_card[i].ENABLE_PIN, OUTPUT);
-        digitalWrite(mux_card[i].ENABLE_PIN, LOW);
+       // pinMode(mux_card[i].ENABLE_PIN, OUTPUT);
+       // digitalWrite(mux_card[i].ENABLE_PIN, LOW);
 
         pinMode(MUX_S0_PIN, OUTPUT);
         pinMode(MUX_S1_PIN, OUTPUT);
