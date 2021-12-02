@@ -271,8 +271,8 @@ void setup()
   //                                                                                                               5 for Arduino UNO  - uses OC0B
 
 
-  DCCpp::beginMain(UNDEFINED_PIN, DCC_SIGNAL_PIN_MAIN, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_MAIN, A0);
-  DCCpp::beginProg(UNDEFINED_PIN, DCC_SIGNAL_PIN_PROG, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_PROG, A0);
+  DCCpp::beginMain(UNDEFINED_PIN, DCC_SIGNAL_PIN_MAIN, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_MAIN, MOTOR_SHIELD_CURRENT_MONITOR_PIN_MAIN);
+  DCCpp::beginProg(UNDEFINED_PIN, DCC_SIGNAL_PIN_PROG, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_PROG, MOTOR_SHIELD_CURRENT_MONITOR_PIN_PROG);
 
 // -------------------
 // Watchdog
