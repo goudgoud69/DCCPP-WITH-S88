@@ -19,7 +19,7 @@ extern Mux_Card mux_card[];
 
 const int mux_selectPins[] = {MUX_S0_PIN, MUX_S1_PIN, MUX_S2_PIN, MUX_S3_PIN};
 
-void mux_card_init()
+void MuxCard::init()
 {
 #if MUX_CARD_NB >= 1
     pinMode(MUX_S0_PIN, OUTPUT);
@@ -52,7 +52,7 @@ void mux_card_init()
  * 
  * return byte level    : valeur à écrire 
  */
-byte mux_card_read(byte num_card, byte channel)
+byte MuxCard::read(byte num_card, byte channel)
 {
     byte val;
 

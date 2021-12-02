@@ -21,12 +21,15 @@ typedef struct
   byte card_out;
 } Max_Card_Out;
 
-void mux_card_init();
-byte mux_card_read(byte num_card, byte out);
-void mux_card_write(byte num, byte out, byte level);
+struct MuxCard 
+{
+  static void init();
+  static byte read(byte num_card, byte out);
+  static void write(byte num, byte out, byte level);
 //void selectMuxPin(byte pin, byte maxSIG);
 //void selectMuxPin8(byte pin);
 //void selectMuxPin16(byte pin);
-void user_mux_card_write(byte pinout, byte value);
+  static void user_write(byte pinout, byte value);
+};
 
 #endif

@@ -66,7 +66,7 @@ Mux_Card mux_card[MUX_CARD_NB] = {
 #endif
 
 void SensorMuxCard::init() {
-     mux_card_init();
+     MuxCard::init();
      OldSensorStatus = SensorMuxCard::getSensorStatus();
 }
 
@@ -114,7 +114,7 @@ String SensorMuxCard::getSensorStatus() {
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
         for (byte j=0; j < mux_card[i].NB_CHANNEL; j++)
-          SensorStatus +=  mux_card_read(i, j);
+          SensorStatus +=  MuxCard::read(i, j);
     }
 #endif
     return SensorStatus;    
