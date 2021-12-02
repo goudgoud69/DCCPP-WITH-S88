@@ -62,7 +62,7 @@
 // Définition des cartes
 #if MUX_CARD_NB > 0
 Mux_Card mux_card[MUX_CARD_NB] = {
-    {2, 16}}; // pin 2, model 16 ports
+    {A1, 16}}; // pin 2, model 16 ports or 8
 #endif
 
 void SensorMuxCard::init() {
@@ -113,7 +113,7 @@ String SensorMuxCard::getSensorStatus() {
 #if MUX_CARD_NB >= 1
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
-        for (byte j=0; j < mux_card[i].NB_OUT; j++)
+        for (byte j=0; j < mux_card[i].NB_CHANNEL; j++)
           SensorStatus +=  mux_card_read(i, j);
     }
 #endif
