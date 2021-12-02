@@ -25,7 +25,7 @@
 
  - the following variation of the "Q" command:
   <Q>:  sets Nb_S88_Modules to read = 2..64 (step of 2)
-                                       DataFormat = 2 for SENSOR like style use by JMRI & Rocrail
+                                       DataFormat = 3 for SENSOR like style use by JMRI & Rocrail
         returns: <Q ID> if sensor Id is active (1), <q ID> if sensor ID is inactive (0)
                  any sensor change will send new data to the PC
 
@@ -38,6 +38,7 @@
   
 ***********************************************************************
 */
+extern Mux_Card mux_card[];
 
 #include "DCCpp.h"
 
@@ -59,11 +60,6 @@
   //String SensorStatus;       //  sensor status response
   String OldSensorStatus;
 
-// Définition des cartes
-#if MUX_CARD_NB > 0
-Mux_Card mux_card[MUX_CARD_NB] = {
-    {A1, 16}}; // pin 2, model 16 ports or 8
-#endif
 
 void SensorMuxCard::init() {
      MuxCard::init();

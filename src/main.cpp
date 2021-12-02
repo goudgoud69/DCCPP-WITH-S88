@@ -102,6 +102,15 @@ A5  I2C_SCL_PIN
 A6  CURRENT_MONITOR_PIN_MAIN3       CURRENT_MONITOR_PIN_MAIN3       dépot + garage
 A7  Free
 
+Alternative David
+A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
+A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG        
+A2  MUX_CARD_PIN_1                  MUX_CARD_PIN_1                                             
+A3  MUX_CARD_PIN_2                  MUX_CARD_PIN_2                                                                 
+A4  I2C_SDA_PIN                                                     
+A5  I2C_SCL_PIN    
+
+
 **************************************************************/
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +178,16 @@ A7  Free
   #define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
 #endif
 
+//////////////////////////////////////////////////////////////////////////////////////
+// DEFINE CARTES MULTIPLEX
+#ifdef USER_SENSORMUXCARD
+  #if MUX_CARD_NB > 
+    Mux_Card mux_card[MUX_CARD_NB] = {
+      {MUX_CARD_PIN_1, 16}}; // pin A2, model 16 ports or 8
+#endif
+
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Reserved pins: A2, A3, A4, A5, A6, A7 for future expansion Nano or Mega
@@ -196,7 +215,8 @@ void setup()
   Serial.println(F("Initialisation de la liaison serie USB2COM 115200 baud"));
   Serial.println(F("Programme de conduite DCCpp_S88 pour Arduino UNO/MEGA2560"));
   Serial.println(F("Adaptation par Philippe Chavatte - 31 juillet 2018 - lormedy.free.fr"));
-  Serial.println(F("Option S88 par Philippe Chavatte - 25 mai 2019 - lormedy.free.fr")); delay(500);
+  Serial.println(F("Option S88 par Philippe Chavatte - 25 mai 2019 - lormedy.free.fr"));
+  Serial.println(F("Option Sensors IR via cartes MUX par David Goudard decembre 2021")); delay(500);
   Serial.print(F(LIBRARY_VERSION)); Serial.println(F(" + S88"));
   Serial.println(F("Compatible avec CDM_Rail, CDT, JMRI et Rocrail"));
   Serial.print(F("--------- Module DCC initialisé avec "));
@@ -225,6 +245,7 @@ void setup()
   digitalWrite(S88_Clock_PIN, LOW);
   digitalWrite(S88_Reset_PIN, LOW);
 #endif
+
 
 #if defined(USE_ETHERNET)
   pinMode(SS, OUTPUT);              // SS for Ethernet controller
