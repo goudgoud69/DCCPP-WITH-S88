@@ -80,8 +80,7 @@ Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
 #define MUX_CARD_NB 1 // nombre de carte multiplexeurs/demultiplexeurs
 #define MUX_CARD_NB_VOIES 16 // nombre de voix sur carte multiplexeurs/demultiplexeurs
 
-#define MUX_SIG_IN_PIN A1  
-
+#define MUX_ENABLE_PIN 2
 #define MUX_S0_PIN 3
 #define MUX_S1_PIN 4
 #define MUX_S2_PIN 5
