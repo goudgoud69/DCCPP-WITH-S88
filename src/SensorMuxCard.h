@@ -9,15 +9,19 @@ COPYRIGHT (c) 2021 David Goudard
   #define SensorMuxCard_h
 
  #ifdef USE_SENSORMUXCARD
-   #include "Arduino.h"
-   #include "DCCpp.h"
    #include "mux_card.h"
 
-struct SensorMuxCard{
-   static void init();
-   static void check();
-   static String getSensorStatus();
-};
+   #define SENSORMUXCARD_SAMPLE_TIME 500
+
+  struct SensorMuxCard{
+    static long int sampleTime; 
+    static Mux_Card mux_card[];
+    static boolean checkTime();
+
+    static void init();
+    static void check();
+    static String getSensorStatus();
+  };
 
   #endif  // USE_SENSORMUXCARD
 #endif  // SensorMuxCard_h

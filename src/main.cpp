@@ -124,18 +124,6 @@ A5  I2C_SCL_PIN
 // ********* Rajour du watchdog *************************
 #include <KeepMeAlive.h>
 
-#define EmergencyStop A3           // allready defined in CurrentMonitor.h line 47
-// ***** Pour activer le bouton d'arret d'urgence sur A3, placer un bouton poussoir connecté avec la masse
-
-// ***** Pour utiliser CDM-Rail avec le bus S88, dé-commenter la ligne 16 de S88.h *****
-
-/////////////////////////////////////////////////////////////////////////////////////
-// COMM SETUP - ***** Please select a COMM type and an Ethernet interface if needed *****
-/////////////////////////////////////////////////////////////////////////////////////
-
-#define COMM_TYPE 0                 // Serial (USB) & NANO or UNO or MEGA
-//#define COMM_TYPE 1                 // Ethernet & MEGA only ==> ***** you must choose an interface in DCCpp.h line 376-379 and an IP address line 149 *****
-//                                                                ***** selectionner une interface dans DCCpp.h ligne 376-379 et une adresse IP ligne 149 *****
 
 #if COMM_TYPE == 0
   // enable serial communication
@@ -176,16 +164,6 @@ A5  I2C_SCL_PIN
   // SDCARD shield attached to pins 4, 50, 51, 52 on MEGA
   //#define SDCARD_CS 4             // Reserved pin for SD card CS : 4 - defined in DCCpp_Uno.h
   #define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
-#endif
-
-//////////////////////////////////////////////////////////////////////////////////////
-// DEFINE CARTES MULTIPLEX
-#ifdef USER_SENSORMUXCARD
-  #if MUX_CARD_NB > 
-    Mux_Card mux_card[MUX_CARD_NB] = {
-      {MUX_CARD_PIN_1, 16}}; // pin A2, model 16 ports or 8
-#endif
-
 #endif
 
 

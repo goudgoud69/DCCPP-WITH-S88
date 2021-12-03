@@ -38,15 +38,16 @@
   
 ***********************************************************************
 */
-extern Mux_Card mux_card[];
+
 
 #include "DCCpp.h"
 
 #ifdef USE_SENSORMUXCARD
   #include "SensorMuxCard.h"
   #include "mux_card.h"
-  #include "DCCpp_Uno.h"
   #include "Comm.h"
+
+  //extern Mux_Card mux_card[];
 
   #ifdef VISUALSTUDIO
     #include "string.h"
@@ -59,6 +60,18 @@ extern Mux_Card mux_card[];
   int DataFormat = 3;     // Output DataFormat 0=binary 1=hexa 2=Q ID; 9=disabled
   //String SensorStatus;       //  sensor status response
   String OldSensorStatus;
+
+long int SensorMuxCard::sampleTime = 0;
+
+  Mux_Card SensorMuxCard::mux_card[MUX_CARD_NB] = {
+      {MUX_CARD_PIN_1, 16}}; // pin A2, model 16 ports or 8
+
+boolean SensorMuxCard::checkTime() {
+  if (millis() - SensorMuxCard::sampleTime < SENSORMUXCARD_SAMPLE_TIME) // no need to check S88 yet
+    return (false);
+  SensorMuxCard::sampleTime = millis();                       // note millis() uses TIMER-0.
+  return (true);
+} // S88::checkTime
 
 
 void SensorMuxCard::init() {
@@ -109,8 +122,8 @@ String SensorMuxCard::getSensorStatus() {
 #if MUX_CARD_NB >= 1
     for (byte i = 0; i < MUX_CARD_NB; i++)
     {
-        for (byte j=0; j < mux_card[i].NB_CHANNEL; j++)
-          SensorStatus +=  MuxCard::read(i, j);
+        for (byte j=0; j < SensorMuxCard::mux_card[i].NB_CHANNEL; j++)
+          SensorStatus +=  MuxCard::read(SensorMuxCard::mux_card[i], j);
     }
 #endif
     return SensorStatus;    

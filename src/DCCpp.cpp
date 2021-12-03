@@ -8,6 +8,9 @@ Modification : David Goudard ajout senseurs par cartes multiplex
 
 #include "DCCpp.h"
 #include "Arduino.h"
+#ifdef USER_SENSORMUXCARD
+#include "mux_card.h"
+#endif
 
 // NEXT DECLARE GLOBAL OBJECTS TO PROCESS AND STORE DCC PACKETS AND MONITOR TRACK CURRENTS.
 // NOTE REGISTER LISTS MUST BE DECLARED WITH "VOLATILE" QUALIFIER TO ENSURE THEY ARE PROPERLY UPDATED BY INTERRUPT ROUTINES
@@ -21,7 +24,6 @@ CurrentMonitor DCCpp::progMonitor;  // create monitor for current on Program Tra
 bool DCCpp::programMode;
 bool DCCpp::panicStopped;
 
-unsigned int time0 = 0;
 
 // *********************************************************** FunctionsState
 
@@ -125,18 +127,11 @@ void DCCpp::loop()
 #endif
 
 #ifdef USE_SENSORMUXCARD
- 	unsigned int time1 = millis(); //unsigned int is suffiscient
-	if ((time1 - time0) < 500)
-    	return;
-  // on arrive ici toute les 500ms
-  //Serial.println(time1 - time0);
-  
-	SensorMuxCard::check();    // check sensors for activated or not
-
-	time0 = time1;
-
+	if (SensorMuxCard::checkTime()) {
+		SensorMuxCard::check();    // check sensors for activated or not
+	}
 #endif
-
+//
 }
 
 
@@ -318,7 +313,7 @@ void DCCpp::beginProg(uint8_t inOptionalDirectionMotor, uint8_t inSignalPin, uin
 
 void DCCpp::begin()
 {
-	time0 = millis();
+	//time0 = millis();
 
 	programMode = false;
 	panicStopped = false;

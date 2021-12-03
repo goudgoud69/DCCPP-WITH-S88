@@ -24,8 +24,8 @@ typedef struct
 struct MuxCard 
 {
   static void init();
-  static byte read(byte num_card, byte out);
-  static void write(byte num, byte out, byte level);
+  static byte read(Mux_Card mux_card, byte out);
+  static void write(Mux_Card mux_card, byte out, byte level);
 //void selectMuxPin(byte pin, byte maxSIG);
 //void selectMuxPin8(byte pin);
 //void selectMuxPin16(byte pin);
