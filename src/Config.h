@@ -94,7 +94,7 @@ Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
 // SELECT PINS MULTIPLEX CARD
 ////////////////////////////////////////////////////////////////////////////
 #ifdef USE_SENSORMUXCARD
-  #define MUX_CARD_NB 1 // nombre de carte multiplexeurs/demultiplexeurs
+  #define MUX_CARD_NB 2 // nombre de carte multiplexeurs/demultiplexeurs
   #define MUX_CARD_NB_VOIES 16 // nombre de voies sur carte multiplexeurs/demultiplexeurs
 
   #define MUX_ENABLE_PIN 2
@@ -104,7 +104,7 @@ Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
   #define MUX_S3_PIN 6
 
   #define MUX_CARD_PIN_1 A2
-  #define MUX_CARD_PIN_2 A5
+  #define MUX_CARD_PIN_2 A4
    
 #endif
 

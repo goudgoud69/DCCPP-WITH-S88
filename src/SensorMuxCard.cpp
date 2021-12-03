@@ -64,7 +64,9 @@
 long int SensorMuxCard::sampleTime = 0;
 
   Mux_Card SensorMuxCard::mux_card[MUX_CARD_NB] = {
-      {MUX_CARD_PIN_1, 16}}; // pin A2, model 16 ports or 8
+      {MUX_CARD_PIN_1, 16},
+      {MUX_CARD_PIN_2, 16}
+  }; // pin A2, model 16 ports or 8
 
 boolean SensorMuxCard::checkTime() {
   if (millis() - SensorMuxCard::sampleTime < SENSORMUXCARD_SAMPLE_TIME) // no need to check S88 yet
@@ -88,13 +90,15 @@ void SensorMuxCard::check() {
     } else if (DataFormat == 3) {           // JMRI, Rocrail or SENSOR style
         SensorStatus = SensorMuxCard::getSensorStatus();
          
-        if (OldSensorStatus != SensorStatus) {
-         INTERFACE.print(SensorStatus);
+        if (!OldSensorStatus.equals(SensorStatus)) {
+         INTERFACE.println(SensorStatus);
           for (unsigned int sIndex = 0; sIndex < SensorStatus.length(); sIndex++) {
-              String tmp = SensorStatus.substring(sIndex, 1); //sIndex + 1);
-              String oldTmp = OldSensorStatus.substring(sIndex, 1); //sIndex + 1);
-              if (tmp[0] != oldTmp[0]) {
-                INTERFACE.print( tmp[0] == '0' ? "<q " : "<Q " );
+              String tmp = SensorStatus.substring(sIndex, sIndex + 1);
+              String oldTmp = OldSensorStatus.substring(sIndex, sIndex + 1);
+             
+              if (!tmp.equals(oldTmp))  
+              {
+                INTERFACE.print( tmp.charAt(0) == '0' ? "<q " : "<Q " );
                 INTERFACE.print(sIndex+1);      // sIndex range 0..511
                 INTERFACE.print(">");
 #if !defined(USE_ETHERNET)

@@ -61,7 +61,7 @@ byte MuxCard::read(Mux_Card mux_card, byte channel)
     digitalWrite(MUX_S2_PIN, bitRead(channel, 2));
 
     // force les sorties
-    if (mux_card.NB_CHANNEL == MUX_CARD_16_PORTS)
+    if (mux_card.NB_CHANNEL > MUX_CARD_8_PORTS)
     {
        digitalWrite(MUX_S3_PIN, bitRead(channel, 3));
     }
