@@ -13,13 +13,13 @@ CD4051B
 #include "Config.h"
 #include "mux_card.h"
 
-#define DEBUG_MODE
+//#define MUX_DEBUG_MODE
 
 const int mux_selectPins[] = {MUX_S0_PIN, MUX_S1_PIN, MUX_S2_PIN, MUX_S3_PIN};
 
 void MuxCard::init()
 {
-#if MUX_CARD_NB >= 1
+//#if MUX_CARD_NB >= 1
     pinMode(MUX_S0_PIN, OUTPUT);
     pinMode(MUX_S1_PIN, OUTPUT);
     pinMode(MUX_S2_PIN, OUTPUT);
@@ -38,7 +38,7 @@ void MuxCard::init()
     pinMode(MUX_ENABLE_PIN, OUTPUT);
     digitalWrite(MUX_ENABLE_PIN, LOW);
 
-#endif
+//#endif
 }
 
 /**
@@ -51,7 +51,7 @@ byte MuxCard::read(Mux_Card mux_card, byte channel)
 {
     byte val;
 
-#if MUX_CARD_NB >= 1
+//#if MUX_CARD_NB >= 1
 
     if (channel > mux_card.NB_CHANNEL - 1)
         return 0;
@@ -68,9 +68,9 @@ byte MuxCard::read(Mux_Card mux_card, byte channel)
     delay(2);
 
     val = digitalRead(mux_card.SIG_IN_PIN); //analogRead(MUX_SIG_IN_PIN); utiliser digital comme cela on reçoit 0 ou 1 pour détecteur présence c'est mieux.
-#endif
+//#endif
      
-    #ifdef DEBUG_MODE 
+    #ifdef MUX_DEBUG_MODE 
     //Serial.print(" "); 
     //Serial.println(val);
     #endif

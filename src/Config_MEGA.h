@@ -4,9 +4,9 @@
 /** Number of track registers for the main line. 0 for transient orders, the others for continual orders. */
 #define MAX_MAIN_REGISTERS 100
 
-#define I2C 20
+#define I2C 20 // I2C/SDA
 #define SCL 21
-
+#define SDA 20
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -43,12 +43,3 @@
 
 #define POLOLU_DIRECTION_MOTOR_CHANNEL_PIN_A 7
 #define POLOLU_DIRECTION_MOTOR_CHANNEL_PIN_B 8
-
-
-
-#ifdef USE_RFID
-  #define SS 53
-  #define MOSI 51
-  #define MISO 50
-  #define SCK 52
-#endif

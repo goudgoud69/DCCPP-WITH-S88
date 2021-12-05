@@ -63,7 +63,7 @@
 
 long int SensorMuxCard::sampleTime = 0;
 
-  Mux_Card SensorMuxCard::mux_card[MUX_CARD_NB] = {
+  Mux_Card SensorMuxCard::mux_card[SENSORMUXCARD_MUX_CARD_NB] = {
       {MUX_CARD_PIN_1, 16},
       {MUX_CARD_PIN_2, 16}
   }; // pin A2, model 16 ports or 8
@@ -73,7 +73,7 @@ boolean SensorMuxCard::checkTime() {
     return (false);
   SensorMuxCard::sampleTime = millis();                       // note millis() uses TIMER-0.
   return (true);
-} // S88::checkTime
+} 
 
 
 void SensorMuxCard::init() {
@@ -123,8 +123,8 @@ void SensorMuxCard::check() {
 
 String SensorMuxCard::getSensorStatus() {
     String SensorStatus = "";
-#if MUX_CARD_NB >= 1
-    for (byte i = 0; i < MUX_CARD_NB; i++)
+#if SENSORMUXCARD_MUX_CARD_NB >= 1
+    for (byte i = 0; i < SENSORMUXCARD_MUX_CARD_NB; i++)
     {
         for (byte j=0; j < SensorMuxCard::mux_card[i].NB_CHANNEL; j++)
           SensorStatus +=  MuxCard::read(SensorMuxCard::mux_card[i], j);

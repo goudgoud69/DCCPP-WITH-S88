@@ -25,7 +25,8 @@ Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
 //
 // DEFINE NUMBER OF MAIN TRACK REGISTER
 
-
+/** Number of track registers for the main line. 0 for transient orders, the others for continual orders. */
+#define MAX_MAIN_REGISTERS 12
 /** Number of track registers for the programming line. 0 for transient orders, the two others for continual orders for the only loco on this track. */
 #define MAX_PROG_REGISTERS 3
 
@@ -75,13 +76,6 @@ struct DCCppConfig
 	static byte DirectionMotorB;		// *_DIRECTION_MOTOR_CHANNEL_PIN_B
 };
 
-#endif
-
-/////////////////////////////////////////////////////////
-// Sensord via multiplex card(s)
-#ifdef USE_SENSORMUXCARD
-  #define MUX_CARD_NB 2 // nombre de carte multiplexeurs/demultiplexeurs
-  #define MUX_CARD_NB_VOIES 16 // nombre de voies sur carte multiplexeurs/demultiplexeurs
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////

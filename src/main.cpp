@@ -3,6 +3,7 @@ project: <Générateur DCCpp_S88> V1.2
 author:  <Philippe Chavatte>
 description: <DCC Generator with S88 interface>
 Last update: 25 october 2019 / Modifié par David GOUDARD le 31/12/2020 : rajout Watchdog (voir https://github.com/Locoduino/KeepMeAlive) + interruption surveillance court-circuit sur bus DCC
+Modifié par David GOUDARD le 05/12/2021 : rajout support RFID
 
 *****====================== IMPORTANT ======================*****
 *****
@@ -71,7 +72,7 @@ MEGA :
 7   S88_Reset_PIN / MUX_S1_PIN      S88_Reset_PIN / MUX_S1_PIN                   
 8   S88_DataL_PIN / MUX_S2_PIN      S88_DataL_PIN / MUX_S2_PIN                   
 9   S88_DataR_PIN / MUX_S3_PIN      S88_DataR_PIN / MUX_S3_PIN                   
-10  DCC_SIGNAL_PIN_MAIN             ------------------------------  
+10  DCC_SIGNAL_PIN_MAIN             SDA ?  
 11  DCC_ENABLE_PIN_PROG             DCC_ENABLE_PIN_PROG             
 12  ------------------------------  DCC_SIGNAL_PIN_MAIN             
 13  LED---------------------------  LED---------------------------  
@@ -79,6 +80,7 @@ MEGA :
 20                                  I2C_SDA_PIN                     
 21                                  I2C_SCL_PIN                     
 
+49                                  RFID_RST_PIN
 50                                  SPI_MISO_PIN                    
 51                                  SPI_MOSI_PIN                    
 52                                  SPI_SCK_PIN                     
