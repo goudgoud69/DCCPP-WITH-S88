@@ -63,14 +63,14 @@ MEGA :
 ===============================================================================================
 0   SERIAL_RX0                      SERIAL_RX0                      
 1   SERIAL_TX0                      SERIAL_TX0                      
-2   S88_Clock_PIN                   DCC_SIGNAL_PIN_PROG             
+2   S88_Clock_PIN / MUX_ENABLE_PIN  DCC_SIGNAL_PIN_PROG             
 3   DCC_ENABLE_PIN_MAIN             DCC_ENABLE_PIN_MAIN             
 4   SDCARD_CS                       SDCARD_CS                       
-5   DCC_SIGNAL_PIN_PROG             S88_Clock_PIN                   
-6   S88_LOAD_PS_PIN                 S88_LOAD_PS_PIN                 
-7   S88_Reset_PIN                   S88_Reset_PIN                   
-8   S88_DataL_PIN                   S88_DataL_PIN                   
-9   S88_DataR_PIN                   S88_DataR_PIN                   
+5   DCC_SIGNAL_PIN_PROG             S88_Clock_PIN  / MUX_ENABLE_PIN                  
+6   S88_LOAD_PS_PIN / MUX_S0_PIN    S88_LOAD_PS_PIN / MUX_S0_PIN                 
+7   S88_Reset_PIN / MUX_S1_PIN      S88_Reset_PIN / MUX_S1_PIN                   
+8   S88_DataL_PIN / MUX_S2_PIN      S88_DataL_PIN / MUX_S2_PIN                   
+9   S88_DataR_PIN / MUX_S3_PIN      S88_DataR_PIN / MUX_S3_PIN                   
 10  DCC_SIGNAL_PIN_MAIN             ------------------------------  
 11  DCC_ENABLE_PIN_PROG             DCC_ENABLE_PIN_PROG             
 12  ------------------------------  DCC_SIGNAL_PIN_MAIN             
@@ -82,15 +82,23 @@ MEGA :
 50                                  SPI_MISO_PIN                    
 51                                  SPI_MOSI_PIN                    
 52                                  SPI_SCK_PIN                     
-53                                  SPI_SS_PIN                      
+53                                  SPI_SS_PIN       
+
+A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
+A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG 
+A2  MUX_CARD_PIN_1                  MUX_CARD_PIN_1
+A3  Emergency_Stop                  Emergency_Stop                  Stop = 0, Normal = 1
+A4  MUX_CARD_PIN_2                  MUX_CARD_PIN_2
+A5
+
 
 Alternative 1
-A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
-A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG        
+53
 A2                                                                  
 A3                                                                  
 A4  I2C_SDA_PIN                                                     
-A5  I2C_SCL_PIN                                                     
+A5  I2C_SCL_PIN   
+A6                                 SPI_SS_PIN / MUX CARD PIN_3 FOR RFID multi readers                                       
 
 Alternative 2
 A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        voie int
@@ -102,13 +110,6 @@ A5  I2C_SCL_PIN
 A6  CURRENT_MONITOR_PIN_MAIN3       CURRENT_MONITOR_PIN_MAIN3       dépot + garage
 A7  Free
 
-Alternative David
-A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
-A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG        
-A2  MUX_CARD_PIN_1                  MUX_CARD_PIN_1                                             
-A3  MUX_CARD_PIN_2                  MUX_CARD_PIN_2                                                                 
-A4  I2C_SDA_PIN                                                     
-A5  I2C_SCL_PIN    
 
 
 **************************************************************/
@@ -163,7 +164,7 @@ A5  I2C_SCL_PIN
   // Shields:
   // SDCARD shield attached to pins 4, 50, 51, 52 on MEGA
   //#define SDCARD_CS 4             // Reserved pin for SD card CS : 4 - defined in DCCpp_Uno.h
-  #define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
+  //#define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
 #endif
 
 
@@ -171,15 +172,15 @@ A5  I2C_SCL_PIN
 // Reserved pins: A2, A3, A4, A5, A6, A7 for future expansion Nano or Mega
 //////////////////////////////////////////////////////////////////////////////////////
 
-// SPI bus                // NANO/UNO
-// SS     PIN 10          // reserved for Ethernet shield on MEGA
-// MOSI   PIN 11
-// MISO   PIN 12
-// SCK    PIN 13          // LED BUILTIN
+// SPI bus   // NANO/UNO           Mega 
+// SS        PIN 10                53           // 10 reserved for Ethernet shield on MEGA
+// MOSI      PIN 11                51 on Mega
+// MISO      PIN 12                50 on Mega
+// SCK       PIN 13 (LED BUILTIN)  52 on Mega 
 
-// I2C bus NANO
-// SDA   PIN A4           // 20 on Mega
-// SCL   PIN A5           // 21 on Mega
+// I2C bus   NANO
+// SDA       PIN A4                20 on Mega
+// SCL       PIN A5                21 on Mega
 
 
 ///////////////////////////////////////////////////////////////////////////////
