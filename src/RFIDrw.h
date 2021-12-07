@@ -51,7 +51,6 @@ COPYRIGHT (c) 2021 David Goudard
         static void sendRFIDDetected(byte can_id, byte *buffer);
     };
 
-    void send_byte_array_incl_ChkSum(unsigned char *buffer, byte bufferSize);
-
+    void strToByte( unsigned char* s, unsigned char len, unsigned char* data )
 #endif
 

@@ -9,39 +9,39 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define MAX_LEN 16   // Êý×é×î´ó³¤¶È
+#define MAX_LEN 16   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó³¤¶ï¿½
 
-//MF522ÃüÁî×Ö
-#define PCD_IDLE              0x00               //ÎÞ¶¯×÷£¬È¡Ïûµ±Ç°ÃüÁî
-#define PCD_AUTHENT           0x0E               //ÑéÖ¤ÃÜÔ¿
-#define PCD_RECEIVE           0x08               //½ÓÊÕÊý¾Ý
-#define PCD_TRANSMIT          0x04               //·¢ËÍÊý¾Ý
-#define PCD_TRANSCEIVE        0x0C               //·¢ËÍ²¢½ÓÊÕÊý¾Ý
-#define PCD_RESETPHASE        0x0F               //¸´Î»
-#define PCD_CALCCRC           0x03               //CRC¼ÆËã
+//MF522ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PCD_IDLE              0x00               //ï¿½Þ¶ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+#define PCD_AUTHENT           0x0E               //ï¿½ï¿½Ö¤ï¿½ï¿½Ô¿
+#define PCD_RECEIVE           0x08               //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PCD_TRANSMIT          0x04               //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PCD_TRANSCEIVE        0x0C               //ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PCD_RESETPHASE        0x0F               //ï¿½ï¿½Î»
+#define PCD_CALCCRC           0x03               //CRCï¿½ï¿½ï¿½ï¿½
 
-//Mifare_One¿¨Æ¬ÃüÁî×Ö
-#define PICC_REQIDL           0x26               //Ñ°ÌìÏßÇøÄÚÎ´½øÈëÐÝÃß×´Ì¬
-#define PICC_REQALL           0x52               //Ñ°ÌìÏßÇøÄÚÈ«²¿¿¨
-#define PICC_ANTICOLL         0x93               //·À³å×²
-#define PICC_SElECTTAG        0x93               //Ñ¡¿¨
-#define PICC_AUTHENT1A        0x60               //ÑéÖ¤AÃÜÔ¿
-#define PICC_AUTHENT1B        0x61               //ÑéÖ¤BÃÜÔ¿
-#define PICC_READ             0x30               //¶Á¿é
-#define PICC_WRITE            0xA0               //Ð´¿é
+//Mifare_Oneï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PICC_REQIDL           0x26               //Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+#define PICC_REQALL           0x52               //Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½
+#define PICC_ANTICOLL         0x93               //ï¿½ï¿½ï¿½ï¿½×²
+#define PICC_SElECTTAG        0x93               //Ñ¡ï¿½ï¿½
+#define PICC_AUTHENT1A        0x60               //ï¿½ï¿½Ö¤Aï¿½ï¿½Ô¿
+#define PICC_AUTHENT1B        0x61               //ï¿½ï¿½Ö¤Bï¿½ï¿½Ô¿
+#define PICC_READ             0x30               //ï¿½ï¿½ï¿½ï¿½
+#define PICC_WRITE            0xA0               //Ð´ï¿½ï¿½
 #define PICC_DECREMENT        0xC0               
 #define PICC_INCREMENT        0xC1               
-#define PICC_RESTORE          0xC2               //µ÷¿éÊý¾Ýµ½»º³åÇø
-#define PICC_TRANSFER         0xB0               //±£´æ»º³åÇøÖÐÊý¾Ý
-#define PICC_HALT             0x50               //ÐÝÃß
+#define PICC_RESTORE          0xC2               //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PICC_TRANSFER         0xB0               //ï¿½ï¿½ï¿½æ»ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define PICC_HALT             0x50               //ï¿½ï¿½ï¿½ï¿½
  
-//ºÍMF522Í¨Ñ¶Ê±·µ»ØµÄ´íÎó´úÂë
+//ï¿½ï¿½MF522Í¨Ñ¶Ê±ï¿½ï¿½ï¿½ØµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define MI_OK                 0
 #define MI_NOTAGERR           1
 #define MI_ERR                2
 
 
-//------------------MFRC522¼Ä´æÆ÷---------------
+//------------------MFRC522ï¿½Ä´ï¿½ï¿½ï¿½---------------
 //Page 0:Command and Status
 #define     Reserved00            0x00    
 #define     CommandReg            0x01    
@@ -116,7 +116,7 @@ class RFID
 {
   public:
 	RFID(int chipSelectPin, int NRSTPD);
-	unsigned char serNum[5];       // 4×Ö½Ú¿¨ÐòÁÐºÅ£¬µÚ5×Ö½ÚÎªÐ£Ñé×Ö½Ú
+	unsigned char serNum[5];       // 4ï¿½Ö½Ú¿ï¿½ï¿½ï¿½ï¿½ÐºÅ£ï¿½ï¿½ï¿½5ï¿½Ö½ï¿½ÎªÐ£ï¿½ï¿½ï¿½Ö½ï¿½
 	void init();
 	void reset();
 
@@ -142,5 +142,43 @@ class RFID
 	int _chipSelectPin;
 	int _NRSTPD;
 };
+
+typedef struct {
+  byte   config;
+  byte   data[5];
+  int    addr;
+
+  byte   sample;
+  byte   bitcnt;
+  byte   status;
+
+  byte   sampledata;
+  byte   dataready;
+  
+  byte   raw[10];
+  byte   rawcnt;
+  byte   rawcntwd;
+  byte   rawcrc[2];
+  byte   timedoff;
+  byte   timer;
+} RFIDDef;
+
+typedef struct {
+  byte   status;
+  byte   timer;
+  byte   timedoff;
+  int    addr;
+} SENSDef;
+
+typedef struct {
+  byte   data[5];
+} AllowedRFIDDef;
+
+
+extern far RFIDDef RFID[8];
+extern far SENSDef Sensor[8];
+extern far AllowedRFIDDef AllowedRFID[5];
+
+
 
 #endif

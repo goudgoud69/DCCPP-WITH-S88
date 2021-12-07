@@ -92,15 +92,7 @@ void RFIDrw::check()
       #endif
      
 
-      // lecture numero et nom du train/loco
-      // Nous utilisons les pages 4 à 7 inclus (4 octets/page donc 16 octets)
-      byte sector         = 1;
-      byte blockAddr      = RFCpageAddr;
-      byte trailerBlock   = RFCpageAddr + 3;
-      byte buffer[18];        // 16 caractères + CRC
-      byte size = sizeof(buffer);
-      _rfid.read(blockAddr, buffer);
-
+/*
       #ifdef RFIDrw_DEBUG
         // Affichage du contenu du secteur 
         Serial.print(F("Contenu des pages: "));Serial.print(blockAddr);Serial.print(" à ");Serial.println(trailerBlock);
@@ -108,7 +100,7 @@ void RFIDrw::check()
         dump_char_array(buffer, 16); Serial.println();
         Serial.println();
       #endif
-
+*/
 
       send_byte_array_incl_ChkSum(str, 6);     // send card-ID (5 words) to the RS232 port in HEX, including Checksum
 
@@ -165,6 +157,13 @@ void send_byte_array_incl_ChkSum(unsigned char *buffer, byte bufferSize)
    Serial.write(0x03);                                               // ETX (03h). You must send ETX as a byte, only then ETX is recognized as a command
 }
 
- 
+void strToByte( unsigned char* s, unsigned char len, unsigned char* data ) {
+  unsigned char i;
+  for( i = 0; i < len; i+=2 ) {
+    unsigned char v1 = (s[i  ] & 0x40) ? s[i  ]-0x37:s[i  ]-0x30;
+    unsigned char v2 = (s[i+1] & 0x40) ? s[i+1]-0x37:s[i+1]-0x30;
+    data[i/2] = (v1<<4) + v2;
+  }
+} 
 
 
