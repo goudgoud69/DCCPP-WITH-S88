@@ -4,6 +4,8 @@
 #include <SPI.h>
 #include "can.h"
 
+#include "DCCpp_Uno.h"
+
 /*
  *  Speed 8M
  */

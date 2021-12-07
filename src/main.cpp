@@ -192,6 +192,7 @@ A7  Free
 void setup()
 {
   Serial.begin(115200);
+ 
   Serial.flush(); delay(1000);
   Serial.println(F("Initialisation de la liaison serie USB2COM 115200 baud"));
   Serial.println(F("Programme de conduite DCCpp_S88 pour Arduino UNO/MEGA2560"));
@@ -307,4 +308,21 @@ void loop(){
 // Modif pour DEBUG dans le fichier DCCpp.h line 347, 353, 359
    
   DCCpp::loop();    // dans DCCpp.cpp ligne 92
+}
+
+/**
+ * Routines d'affichage d'un tableau d'octets en Hexa et en Ascii (char)
+ */
+void dump_byte_array(byte *buffer, byte bufferSize) {
+    for (byte i = 0; i < bufferSize; i++) {
+        Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+        Serial.print(buffer[i], HEX);
+    }
+}
+
+void dump_char_array(byte *buffer, byte bufferSize) {
+    for (byte i = 0; i < bufferSize; i++) {
+        Serial.print("  ");
+        Serial.print((char)buffer[i]);
+    }
 }

@@ -8,6 +8,7 @@ COPYRIGHT (c) 2021 David Goudard
 #ifndef RFIDrw_h
   #define RFIDrw_h
 
+  #include "Config.h"
 /*
  *
  * Typical pin layout used:
@@ -25,10 +26,11 @@ COPYRIGHT (c) 2021 David Goudard
  * 
  * 
  */
-  #define SS 53
-  #define MOSI 51
-  #define MISO 50
-  #define SCK 52
+
+  //#define SS 53
+  //#define MOSI 51
+  //#define MISO 50
+  //#define SCK 52
   #define RST 49
 
   #define RFID_SAMPLE_TIME 125
@@ -44,9 +46,12 @@ COPYRIGHT (c) 2021 David Goudard
         static boolean checkTime();
         static void init();
         static void check();
-        RFID rfid[];
+        //RFID rfid;
         static Mux_Card mux_card;
+        static void sendRFIDDetected(byte can_id, byte *buffer);
     };
+
+    void send_byte_array_incl_ChkSum(unsigned char *buffer, byte bufferSize);
 
 #endif
 

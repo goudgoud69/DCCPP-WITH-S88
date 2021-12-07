@@ -8,8 +8,11 @@ Modification : David Goudard ajout senseurs par cartes multiplex
 
 #include "DCCpp.h"
 #include "Arduino.h"
-#ifdef USER_SENSORMUXCARD
-#include "mux_card.h"
+#ifdef USE_SENSORMUXCARD
+  #include "mux_card.h"
+#endif
+#ifdef USE_RFID
+  #include "RFIDrw.h"
 #endif
 
 // NEXT DECLARE GLOBAL OBJECTS TO PROCESS AND STORE DCC PACKETS AND MONITOR TRACK CURRENTS.
@@ -131,6 +134,12 @@ void DCCpp::loop()
 		SensorMuxCard::check();    // check sensors for activated or not
 	}
 #endif
+
+#ifdef USE_RFID
+	if (RFIDrw::checkTime()) {
+		RFIDrw::check();    // check sensors for activated or not
+	}
+#endif 
 //
 }
 
@@ -344,6 +353,10 @@ void DCCpp::begin()
 #ifdef USE_SENSORMUXCARD
 	SensorMuxCard::init(); // initialize multiplex config card
 #endif 
+
+#ifdef USE_RFID
+    RFIDrw::init();
+#endif
 
 #ifdef DCCPP_DEBUG_MODE
 	//pinMode(LED_BUILTIN, OUTPUT);

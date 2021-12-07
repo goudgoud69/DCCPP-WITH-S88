@@ -25,8 +25,7 @@ Adapté pat David Goudard pour l'ajout carte multiplex pour senseurs IR
 //
 // DEFINE NUMBER OF MAIN TRACK REGISTER
 
-/** Number of track registers for the main line. 0 for transient orders, the others for continual orders. */
-#define MAX_MAIN_REGISTERS 12
+
 /** Number of track registers for the programming line. 0 for transient orders, the two others for continual orders for the only loco on this track. */
 #define MAX_PROG_REGISTERS 3
 
@@ -89,4 +88,5 @@ struct DCCppConfig
 #endif
 
 
-
+void dump_byte_array(byte *buffer, byte bufferSize);
+void dump_char_array(byte *buffer, byte bufferSize);
