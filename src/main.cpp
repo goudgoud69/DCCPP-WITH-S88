@@ -3,6 +3,7 @@ project: <Générateur DCCpp_S88> V1.2
 author:  <Philippe Chavatte>
 description: <DCC Generator with S88 interface>
 Last update: 25 october 2019 / Modifié par David GOUDARD le 31/12/2020 : rajout Watchdog (voir https://github.com/Locoduino/KeepMeAlive) + interruption surveillance court-circuit sur bus DCC
+Modifié par David GOUDARD le 05/12/2021 : rajout support RFID
 
 *****====================== IMPORTANT ======================*****
 *****
@@ -63,15 +64,15 @@ MEGA :
 ===============================================================================================
 0   SERIAL_RX0                      SERIAL_RX0                      
 1   SERIAL_TX0                      SERIAL_TX0                      
-2   S88_Clock_PIN                   DCC_SIGNAL_PIN_PROG             
+2   S88_Clock_PIN / MUX_ENABLE_PIN  DCC_SIGNAL_PIN_PROG             
 3   DCC_ENABLE_PIN_MAIN             DCC_ENABLE_PIN_MAIN             
 4   SDCARD_CS                       SDCARD_CS                       
-5   DCC_SIGNAL_PIN_PROG             S88_Clock_PIN                   
-6   S88_LOAD_PS_PIN                 S88_LOAD_PS_PIN                 
-7   S88_Reset_PIN                   S88_Reset_PIN                   
-8   S88_DataL_PIN                   S88_DataL_PIN                   
-9   S88_DataR_PIN                   S88_DataR_PIN                   
-10  DCC_SIGNAL_PIN_MAIN             ------------------------------  
+5   DCC_SIGNAL_PIN_PROG             S88_Clock_PIN  / MUX_ENABLE_PIN                  
+6   S88_LOAD_PS_PIN / MUX_S0_PIN    S88_LOAD_PS_PIN / MUX_S0_PIN                 
+7   S88_Reset_PIN / MUX_S1_PIN      S88_Reset_PIN / MUX_S1_PIN                   
+8   S88_DataL_PIN / MUX_S2_PIN      S88_DataL_PIN / MUX_S2_PIN                   
+9   S88_DataR_PIN / MUX_S3_PIN      S88_DataR_PIN / MUX_S3_PIN                   
+10  DCC_SIGNAL_PIN_MAIN             SDA ?  
 11  DCC_ENABLE_PIN_PROG             DCC_ENABLE_PIN_PROG             
 12  ------------------------------  DCC_SIGNAL_PIN_MAIN             
 13  LED---------------------------  LED---------------------------  
@@ -79,18 +80,27 @@ MEGA :
 20                                  I2C_SDA_PIN                     
 21                                  I2C_SCL_PIN                     
 
+49                                  RFID_RST_PIN
 50                                  SPI_MISO_PIN                    
 51                                  SPI_MOSI_PIN                    
 52                                  SPI_SCK_PIN                     
-53                                  SPI_SS_PIN                      
+53                                  SPI_SS_PIN       
+
+A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
+A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG 
+A2  MUX_CARD_PIN_1                  MUX_CARD_PIN_1
+A3  Emergency_Stop                  Emergency_Stop                  Stop = 0, Normal = 1
+A4  MUX_CARD_PIN_2                  MUX_CARD_PIN_2
+A5
+
 
 Alternative 1
-A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        
-A1  CURRENT_MONITOR_PIN_PROG        CURRENT_MONITOR_PIN_PROG        
+53
 A2                                                                  
 A3                                                                  
 A4  I2C_SDA_PIN                                                     
-A5  I2C_SCL_PIN                                                     
+A5  I2C_SCL_PIN   
+A6                                 SPI_SS_PIN / MUX CARD PIN_3 FOR RFID multi readers                                       
 
 Alternative 2
 A0  CURRENT_MONITOR_PIN_MAIN        CURRENT_MONITOR_PIN_MAIN        voie int
@@ -101,6 +111,8 @@ A4  I2C_SDA_PIN
 A5  I2C_SCL_PIN                     
 A6  CURRENT_MONITOR_PIN_MAIN3       CURRENT_MONITOR_PIN_MAIN3       dépot + garage
 A7  Free
+
+
 
 **************************************************************/
 
@@ -115,18 +127,6 @@ A7  Free
 // ********* Rajour du watchdog *************************
 #include <KeepMeAlive.h>
 
-#define EmergencyStop A3           // allready defined in CurrentMonitor.h line 47
-// ***** Pour activer le bouton d'arret d'urgence sur A3, placer un bouton poussoir connecté avec la masse
-
-// ***** Pour utiliser CDM-Rail avec le bus S88, dé-commenter la ligne 16 de S88.h *****
-
-/////////////////////////////////////////////////////////////////////////////////////
-// COMM SETUP - ***** Please select a COMM type and an Ethernet interface if needed *****
-/////////////////////////////////////////////////////////////////////////////////////
-
-#define COMM_TYPE 0                 // Serial (USB) & NANO or UNO or MEGA
-//#define COMM_TYPE 1                 // Ethernet & MEGA only ==> ***** you must choose an interface in DCCpp.h line 376-379 and an IP address line 149 *****
-//                                                                ***** selectionner une interface dans DCCpp.h ligne 376-379 et une adresse IP ligne 149 *****
 
 #if COMM_TYPE == 0
   // enable serial communication
@@ -166,7 +166,7 @@ A7  Free
   // Shields:
   // SDCARD shield attached to pins 4, 50, 51, 52 on MEGA
   //#define SDCARD_CS 4             // Reserved pin for SD card CS : 4 - defined in DCCpp_Uno.h
-  #define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
+  //#define SS 53               // 53 on MEGA. SPI doesn't work without this pin set to output !
 #endif
 
 
@@ -174,15 +174,15 @@ A7  Free
 // Reserved pins: A2, A3, A4, A5, A6, A7 for future expansion Nano or Mega
 //////////////////////////////////////////////////////////////////////////////////////
 
-// SPI bus                // NANO/UNO
-// SS     PIN 10          // reserved for Ethernet shield on MEGA
-// MOSI   PIN 11
-// MISO   PIN 12
-// SCK    PIN 13          // LED BUILTIN
+// SPI bus   // NANO/UNO           Mega 
+// SS        PIN 10                53           // 10 reserved for Ethernet shield on MEGA
+// MOSI      PIN 11                51 on Mega
+// MISO      PIN 12                50 on Mega
+// SCK       PIN 13 (LED BUILTIN)  52 on Mega 
 
-// I2C bus NANO
-// SDA   PIN A4           // 20 on Mega
-// SCL   PIN A5           // 21 on Mega
+// I2C bus   NANO
+// SDA       PIN A4                20 on Mega
+// SCL       PIN A5                21 on Mega
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -192,11 +192,13 @@ A7  Free
 void setup()
 {
   Serial.begin(115200);
+ 
   Serial.flush(); delay(1000);
   Serial.println(F("Initialisation de la liaison serie USB2COM 115200 baud"));
   Serial.println(F("Programme de conduite DCCpp_S88 pour Arduino UNO/MEGA2560"));
   Serial.println(F("Adaptation par Philippe Chavatte - 31 juillet 2018 - lormedy.free.fr"));
-  Serial.println(F("Option S88 par Philippe Chavatte - 25 mai 2019 - lormedy.free.fr")); delay(500);
+  Serial.println(F("Option S88 par Philippe Chavatte - 25 mai 2019 - lormedy.free.fr"));
+  Serial.println(F("Option Sensors IR via cartes MUX par David Goudard decembre 2021")); delay(500);
   Serial.print(F(LIBRARY_VERSION)); Serial.println(F(" + S88"));
   Serial.println(F("Compatible avec CDM_Rail, CDT, JMRI et Rocrail"));
   Serial.print(F("--------- Module DCC initialisé avec "));
@@ -225,6 +227,7 @@ void setup()
   digitalWrite(S88_Clock_PIN, LOW);
   digitalWrite(S88_Reset_PIN, LOW);
 #endif
+
 
 #if defined(USE_ETHERNET)
   pinMode(SS, OUTPUT);              // SS for Ethernet controller
@@ -271,8 +274,8 @@ void setup()
   //                                                                                                               5 for Arduino UNO  - uses OC0B
 
 
-  DCCpp::beginMain(UNDEFINED_PIN, DCC_SIGNAL_PIN_MAIN, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_MAIN, A0);
-  DCCpp::beginProg(UNDEFINED_PIN, DCC_SIGNAL_PIN_PROG, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_PROG, A0);
+  DCCpp::beginMain(UNDEFINED_PIN, DCC_SIGNAL_PIN_MAIN, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_MAIN, MOTOR_SHIELD_CURRENT_MONITOR_PIN_MAIN);
+  DCCpp::beginProg(UNDEFINED_PIN, DCC_SIGNAL_PIN_PROG, MOTOR_SHIELD_SIGNAL_ENABLE_PIN_PROG, MOTOR_SHIELD_CURRENT_MONITOR_PIN_PROG);
 
 // -------------------
 // Watchdog
@@ -305,4 +308,21 @@ void loop(){
 // Modif pour DEBUG dans le fichier DCCpp.h line 347, 353, 359
    
   DCCpp::loop();    // dans DCCpp.cpp ligne 92
+}
+
+/**
+ * Routines d'affichage d'un tableau d'octets en Hexa et en Ascii (char)
+ */
+void dump_byte_array(byte *buffer, byte bufferSize) {
+    for (byte i = 0; i < bufferSize; i++) {
+        Serial.print(buffer[i] < 0x10 ? " 0" : " ");
+        Serial.print(buffer[i], HEX);
+    }
+}
+
+void dump_char_array(byte *buffer, byte bufferSize) {
+    for (byte i = 0; i < bufferSize; i++) {
+        Serial.print("  ");
+        Serial.print((char)buffer[i]);
+    }
 }

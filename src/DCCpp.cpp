@@ -2,10 +2,18 @@
 project: <DCCpp library>
 author: <Thierry PARIS>
 description: <DCCpp class>
+
+Modification : David Goudard ajout senseurs par cartes multiplex
 *************************************************************/
 
 #include "DCCpp.h"
 #include "Arduino.h"
+#ifdef USE_SENSORMUXCARD
+  #include "mux_card.h"
+#endif
+#ifdef USE_RFID
+  #include "RFIDrw.h"
+#endif
 
 // NEXT DECLARE GLOBAL OBJECTS TO PROCESS AND STORE DCC PACKETS AND MONITOR TRACK CURRENTS.
 // NOTE REGISTER LISTS MUST BE DECLARED WITH "VOLATILE" QUALIFIER TO ENSURE THEY ARE PROPERLY UPDATED BY INTERRUPT ROUTINES
@@ -17,7 +25,8 @@ CurrentMonitor DCCpp::mainMonitor;  // create monitor for current on Main Track
 CurrentMonitor DCCpp::progMonitor;  // create monitor for current on Program Track
 
 bool DCCpp::programMode;
-bool DCCpp::panicStopped; 
+bool DCCpp::panicStopped;
+
 
 // *********************************************************** FunctionsState
 
@@ -119,7 +128,21 @@ void DCCpp::loop()
 #ifdef USE_SENSOR
 	Sensor::check();    // check sensors for activated or not
 #endif
+
+#ifdef USE_SENSORMUXCARD
+	if (SensorMuxCard::checkTime()) {
+		SensorMuxCard::check();    // check sensors for activated or not
+	}
+#endif
+
+#ifdef USE_RFID
+	if (RFIDrw::checkTime()) {
+		RFIDrw::check();    // check sensors for activated or not
+	}
+#endif 
+//
 }
+
 
 void DCCpp::beginMain(uint8_t inOptionalDirectionMotor, uint8_t inSignalPin, uint8_t inSignalEnable, uint8_t inCurrentMonitor)
 {
@@ -299,6 +322,8 @@ void DCCpp::beginProg(uint8_t inOptionalDirectionMotor, uint8_t inSignalPin, uin
 
 void DCCpp::begin()
 {
+	//time0 = millis();
+
 	programMode = false;
 	panicStopped = false;
 
@@ -323,6 +348,14 @@ void DCCpp::begin()
 	EEStore::init();                                          // initialize and load Turnout and Sensor definitions stored in EEPROM
 	if (EEStore::needsRefreshing())
 		EEStore::store();
+#endif
+
+#ifdef USE_SENSORMUXCARD
+	SensorMuxCard::init(); // initialize multiplex config card
+#endif 
+
+#ifdef USE_RFID
+    RFIDrw::init();
 #endif
 
 #ifdef DCCPP_DEBUG_MODE
@@ -456,7 +489,9 @@ void DCCpp::showConfiguration()
 	Serial.print(F("VERSION DCC++:         "));
 	Serial.println(VERSION);
 	Serial.println(F(LIBRARY_VERSION));
-	Serial.println(F(S88_VERSION));
+	#ifdef USE_S88 
+	  Serial.println(F(S88_VERSION));
+	#endif
 	Serial.print(F("COMPILED:  "));
 	Serial.print(__DATE__);
 	Serial.print(F(" "));
@@ -529,6 +564,10 @@ void DCCpp::showConfiguration()
 #if defined(USE_S88)
     Serial.print(F("     S88   M: "));
     Serial.println(EEStore::data.nS88);
+#endif
+#ifdef USE_SENSORMUXCARD
+    Serial.print(F("     SENSORMUX : "));
+    Serial.println(EEStore::data.nSensorMuxCard);
 #endif
 #endif
 

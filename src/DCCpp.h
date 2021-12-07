@@ -369,10 +369,12 @@ Main include file of the library.*/
 //
 #define USE_EEPROM
 //#define USE_TURNOUT
-//#define USE_SENSOR    // not compatible with USE_S88
+//#define USE_SENSOR    // not compatible with USE_S88 and USE_SENSORMUXCARD
 //#define USE_OUTPUT
-#define USE_S88
+//#define USE_S88         // not compatible with USE_SENSOR and USE_SENSORMUXCARD
 #define USE_TEXTCOMMAND
+#define USE_SENSORMUXCARD // // not compatible with USE_SENSOR and USE_S88
+#define USE_RFID
 //#define USE_ETHERNET_WIZNET_5100
 //#define USE_ETHERNET_WIZNET_5500
 //#define USE_ETHERNET_WIZNET_5200
@@ -441,22 +443,28 @@ Main include file of the library.*/
 #include "Comm.h"
 
 #ifdef USE_TURNOUT
-#include "Turnout.h"
+  #include "Turnout.h"
 #endif
 #ifdef USE_EEPROM
-#include "EEStore.h"
+  #include "EEStore.h"
 #endif
 #ifdef USE_OUTPUT
-#include "Outputs.h"
+  #include "Outputs.h"
 #endif
 #ifdef USE_SENSOR
-#include "Sensor.h"
+  #include "Sensor.h"
 #endif
 #ifdef USE_S88
-#include "S88.h"
+  #include "S88.h"
+#endif
+#ifdef USE_SENSORMUXCARD
+  #include "SensorMuxCard.h"
 #endif
 #ifdef USE_TEXTCOMMAND
-#include "TextCommand.h"
+  #include "TextCommand.h"
+#endif
+#ifdef USE_RFID
+  #include "RFIDrw.h"
 #endif
 
 #include "DCCpp.hpp"
