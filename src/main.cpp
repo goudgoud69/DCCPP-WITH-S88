@@ -192,7 +192,6 @@ A7  Free
 void setup()
 {
   Serial.begin(115200);
- 
   Serial.flush(); delay(1000);
   Serial.println(F("Initialisation de la liaison serie USB2COM 115200 baud"));
   Serial.println(F("Programme de conduite DCCpp_S88 pour Arduino UNO/MEGA2560"));

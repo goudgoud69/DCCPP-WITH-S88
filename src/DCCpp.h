@@ -374,7 +374,7 @@ Main include file of the library.*/
 //#define USE_S88         // not compatible with USE_SENSOR and USE_SENSORMUXCARD
 #define USE_TEXTCOMMAND
 #define USE_SENSORMUXCARD // // not compatible with USE_SENSOR and USE_S88
-#define USE_RFID
+
 //#define USE_ETHERNET_WIZNET_5100
 //#define USE_ETHERNET_WIZNET_5500
 //#define USE_ETHERNET_WIZNET_5200
@@ -462,9 +462,6 @@ Main include file of the library.*/
 #endif
 #ifdef USE_TEXTCOMMAND
   #include "TextCommand.h"
-#endif
-#ifdef USE_RFID
-  #include "RFIDrw.h"
 #endif
 
 #include "DCCpp.hpp"
