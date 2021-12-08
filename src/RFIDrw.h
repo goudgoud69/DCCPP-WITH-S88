@@ -9,6 +9,7 @@ COPYRIGHT (c) 2021 David Goudard
   #define RFIDrw_h
 
   #include "Config.h"
+  #include "cbusdefs.h"
 /*
  *
  * Typical pin layout used:
@@ -36,6 +37,32 @@ COPYRIGHT (c) 2021 David Goudard
   #define RFID_SAMPLE_TIME 125
   //#define RFID_MUX_CARD
 
+  //#define	OPC_DDES	0xFA	// Short data frame aka device data event (device id plus 5 data bytes)
+
+#define CANID 115
+
+typedef struct {
+  unsigned char status;
+  unsigned char b[14];
+} CANMsg;
+
+enum bufbytes {
+        con=0,
+        sidh,
+        sidl,
+        eidh,
+        eidl,
+        dlc,
+        d0,
+        d1,
+        d2,
+        d3,
+        d4,
+        d5,
+        d6,
+        d7
+};
+
 
   #include <SPI.h>
   #include <RFID.h>
@@ -48,10 +75,10 @@ COPYRIGHT (c) 2021 David Goudard
         static void check();
         //RFID rfid;
         static Mux_Card mux_card;
-        static void sendRFIDDetected(byte can_id, byte *buffer);
+        static void sendRFIDDetected(byte can_id, unsigned char *buffer);
     };
 
-    void send_byte_array_incl_ChkSum(unsigned char *buffer, byte bufferSize);
+    void send_byte_array_incl_ChkSum(CANMsg canMsg);
 
 #endif
 

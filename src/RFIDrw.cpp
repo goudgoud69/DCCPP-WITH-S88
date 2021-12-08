@@ -6,11 +6,13 @@ COPYRIGHT (c) 2021 David Goudard
 **********************************************************************/
 
 #include "RFIDrw.h"
-#include "mcp2515.h"
+#include "can-serial.h"
+
+
 
 long int RFIDrw::sampleTime = 0;
 
-#define RFIDrw_DEBUG
+//#define RFIDrw_DEBUG
 
 uint8_t RFCpageAddr = 0x04;      //Les données sont ecrites dans 4 pages : 4,5,6 et 7.
   
@@ -53,6 +55,8 @@ void RFIDrw::init()
     _rfid.init(); 
 
      //OldSensorStatus = SensorMuxCard::getSensorStatus();
+     Can232::init();
+
 }
 
 boolean RFIDrw::checkTime() 
@@ -82,16 +86,17 @@ void RFIDrw::check()
         Serial.print("The card's number is  : ");
         //char serialID[5];
         //Serial.write(0x02);
-        for(int i = 0; i < 4; i++)
+        str[0]=0;
+        for(int i = 1; i < 5; i++)
         {
           //serialID[i]=str[i];
-          Serial.print(0x0F & (str[i] >> 4),HEX);
-          Serial.print(0x0F & str[i],HEX);
+          Serial.print(0x0F & (str[i] >> 4), HEX);
+          Serial.print(0x0F & str[i], HEX);
         }
         Serial.println("");
       #endif
      
-
+/*
       // lecture numero et nom du train/loco
       // Nous utilisons les pages 4 à 7 inclus (4 octets/page donc 16 octets)
       byte sector         = 1;
@@ -108,24 +113,40 @@ void RFIDrw::check()
         dump_char_array(buffer, 16); Serial.println();
         Serial.println();
       #endif
+*/
 
+      //send_byte_array_incl_ChkSum(str, 6);     // send card-ID (5 words) to the RS232 port in HEX, including Checksum
 
-      send_byte_array_incl_ChkSum(str, 6);     // send card-ID (5 words) to the RS232 port in HEX, including Checksum
-
-     // RFIDrw::sendRFIDDetected(1, buffer);
+     RFIDrw::sendRFIDDetected(1, str);
     }
   
     _rfid.selectTag(str);
   }
   _rfid.halt();
 }
-/*
-void RFIDrw::sendRFIDDetected(byte can_id, byte *buffer) 
+
+void RFIDrw::sendRFIDDetected(byte rfidReader, unsigned char *buffer) 
 {
-  struct can_frame canMsg;
+  CANMsg canMsg;
 
   // numero de loco
-  byte nloco = (buffer[0] - '0')*10 + (buffer[1] - '0');
+  //byte nloco = (buffer[0] - '0')*10 + (buffer[1] - '0');
+
+  canMsg.b[d0] = OPC_DDES; //OPC_ACDAT; //OPC_DDES; 
+  canMsg.b[d1] = (rfidReader / 256) & 0xFF;
+  canMsg.b[d2] = (rfidReader) & 0xFF;
+  canMsg.b[d3] = buffer[0];
+  canMsg.b[d4] = buffer[1];
+  canMsg.b[d5] = buffer[2];
+  canMsg.b[d6] = buffer[3];
+  canMsg.b[d7] = buffer[4];
+  canMsg.b[dlc] = 8;
+            
+send_byte_array_incl_ChkSum(canMsg);
+
+
+
+/*
 
   canMsg.can_id = can_id; //0x036; //CAN id as 0x036
   canMsg.can_dlc = 8; //CAN data length as 8
@@ -135,34 +156,94 @@ void RFIDrw::sendRFIDDetected(byte can_id, byte *buffer)
   { 
     canMsg.data[i] = buffer[i+2];
   }
-
-
-
-  MCP2515 mcp2515(0);
-  mcp2515.sendMessage(&canMsg); //Sends the CAN message
-}
 */
+
+
+  //MCP2515 mcp2515(0);
+  //mcp2515.sendMessage(&canMsg); //Sends the CAN message
+}
+
+
 
 /*** routine to send the UiD including STX, checksum and ETX to Serial.*/
 //void send_byte_array_incl_ChkSum(byte *buffer, byte bufferSize) 
-void send_byte_array_incl_ChkSum(unsigned char *buffer, byte bufferSize)  
+
+/*
+[STX]
+[D1] [D2] [D3] [D4] [D5] [D6] [D7] [D8] [D9] [D10]
+[CS1] [CS2]
+[CR]
+[LF]
+[ETX]
+*/
+void send_byte_array_incl_ChkSum(CANMsg canMsg)  
 {
-  byte i=1, Checksum=0 ;
+  byte i=1;
+  unsigned char Checksum=0 ;
       
-    Serial.write(0x02);                                              // STX (02h). You must send STX as a byte, only then STX is recognized as a command
-    
-    for (i = 1; i < 6; i++)                                          // Remove first and last byte, we can only manage messages with 5 bytes of data
-    {          
-      //Serial.print(0x0F & (str[i] >> 4),HEX);
-      //Serial.print(0x0F & str[i],HEX);                                                                       
-      if (i==1) Checksum  = (byte)buffer[i];
-      else      Checksum ^= (byte)buffer[i];   
-      if ((byte)buffer[i] < 0x10) Serial.print (0);                        // HEX value is always 2 bytes
-      Serial.print((byte)buffer[i],HEX);                                   // send information
+  canMsg.b[con] = 0; // ou OPC_ACDAT ?
+
+  canMsg.b[sidh] = (CANID >> 3);
+  canMsg.b[sidl] = (CANID << 5);
+
+  canMsg.b[eidh] = 0x00;
+  canMsg.b[eidl] = 0x00;
+
+  /*
+  Serial.write(":");
+  Serial.write("S");
+
+  Serial.print(0x0F & (canMsg.b[sidh] >> 4), HEX);
+  Serial.print(0x0F & canMsg.b[sidh], HEX);
+
+ Serial.print(0x0F & (canMsg.b[sidl] >> 4), HEX);
+  Serial.print(0x0F & canMsg.b[sidl], HEX);
+
+   Serial.write("N");
+
+  for (i = d0; i <= d7; i++)
+  {
+      Serial.print(0x0F & (canMsg.b[i] >> 4), HEX);
+       Serial.print(0x0F & canMsg.b[i], HEX);
+
+  }
+
+  Serial.write(";");
+  */
+
+
+    for (i = 9; i < 14; i++)                                         
+    {   
+      if (i==9) 
+      {
+        Checksum  = canMsg.b[i];
+      }
+      else 
+      {
+        Checksum  ^= canMsg.b[i];
+      }
     }
-   if (Checksum < 0x10) Serial.print (0);                            // HEX value is always 2 bytes
-   Serial.println(Checksum,HEX);                                     // send checksum
+ 
+
+
+    Serial.write(0x02);                                              // STX (02h). You must send STX as a byte, only then STX is recognized as a command
+
+  for (i = 9; i < 14; i++)
+    {
+       Serial.print(0x0F & (canMsg.b[i] >> 4), HEX);
+       Serial.print(0x0F & canMsg.b[i], HEX);
+     }
+    Serial.print(0x0F & (Checksum >> 4), HEX);
+    Serial.print(0x0F & Checksum, HEX);
+
+
+  Serial.write(0x0D);       // CR
+  Serial.write(0x0A);       // LF
+
    Serial.write(0x03);                                               // ETX (03h). You must send ETX as a byte, only then ETX is recognized as a command
+
+
+
 }
 
  
