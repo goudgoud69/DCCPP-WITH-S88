@@ -375,6 +375,8 @@ Main include file of the library.*/
 #define USE_TEXTCOMMAND
 #define USE_SENSORMUXCARD // // not compatible with USE_SENSOR and USE_S88
 
+//#define USE_ETHERNET_WIFI
+
 //#define USE_ETHERNET_WIZNET_5100
 //#define USE_ETHERNET_WIZNET_5500
 //#define USE_ETHERNET_WIZNET_5200
