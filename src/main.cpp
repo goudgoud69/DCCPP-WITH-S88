@@ -170,21 +170,6 @@ A7  Free
 #endif
 
 
-//////////////////////////////////////////////////////////////////////////////////////
-// Reserved pins: A2, A3, A4, A5, A6, A7 for future expansion Nano or Mega
-//////////////////////////////////////////////////////////////////////////////////////
-
-// SPI bus   // NANO/UNO           Mega 
-// SS        PIN 10                53           // 10 reserved for Ethernet shield on MEGA
-// MOSI      PIN 11                51 on Mega
-// MISO      PIN 12                50 on Mega
-// SCK       PIN 13 (LED BUILTIN)  52 on Mega 
-
-// I2C bus   NANO
-// SDA       PIN A4                20 on Mega
-// SCL       PIN A5                21 on Mega
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // ARDUINO SETUP
 ///////////////////////////////////////////////////////////////////////////////
@@ -205,7 +190,7 @@ void setup()
   Serial.println(F(" ---------")); delay(500);
 
   pinMode(4, INPUT_PULLUP);         // disable SD card until initialisation
-  pinMode(10, INPUT_PULLUP);        // disable Ethernet until initialisation
+  //pinMode(10, INPUT_PULLUP);        // disable Ethernet until initialisation
   pinMode(EmergencyStop, INPUT_PULLUP);
 
 // S88 setup

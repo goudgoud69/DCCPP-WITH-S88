@@ -368,10 +368,10 @@ Main include file of the library.*/
 //  Inclusion area
 //
 #define USE_EEPROM
-//#define USE_TURNOUT
-//#define USE_SENSOR    // not compatible with USE_S88 and USE_SENSORMUXCARD
-//#define USE_OUTPUT
-//#define USE_S88         // not compatible with USE_SENSOR and USE_SENSORMUXCARD
+////#define USE_TURNOUT
+////#define USE_SENSOR    // not compatible with USE_S88 and USE_SENSORMUXCARD
+////#define USE_OUTPUT
+////#define USE_S88         // not compatible with USE_SENSOR and USE_SENSORMUXCARD
 #define USE_TEXTCOMMAND
 #define USE_SENSORMUXCARD // // not compatible with USE_SENSOR and USE_S88
 
